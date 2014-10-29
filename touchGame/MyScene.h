@@ -12,10 +12,10 @@
 
     UIView *startView;
     SKEmitterNode *sparks;
-    UIView *menu;
+    UIScrollView *menu;
     BOOL menuOpen;
     int introHeight;
-    int menuHeight;
+    CGFloat menuHeight;
     BOOL createMenu;
     UILabel *birthLabel;
     UILabel *pRLabel;
@@ -30,7 +30,11 @@
     CGPoint sOrigin;
     UISlider *lifeSpan;
     UILabel *lifeSpanL;
-    NSString *device;    
+    NSString *device;
+    
+    CGRect screenRect;
+    CGFloat screenWidth;
+    CGFloat screenHeight;
     
     UISlider *red;
     UISlider *green;
@@ -38,6 +42,9 @@
     UISlider *speedSlider;
     
     UISegmentedControl *seg;
+    UISegmentedControl *seg1;
+    UISegmentedControl *seg2;
+    
     UILabel *speedLabel;
     UILabel *colour;
     UILabel *redLabel;

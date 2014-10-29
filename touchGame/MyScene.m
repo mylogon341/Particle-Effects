@@ -31,15 +31,13 @@
         createMenu = YES;
         device = [UIDevice currentDevice].model;
         
-        if ([device hasPrefix:@"iPad"]) {
-            menuHeight = 800;
-        }else{
-            menuHeight = 370;
-        }
+        screenRect = [[UIScreen mainScreen] bounds];
+        screenWidth = screenRect.size.width;
+        screenHeight = screenRect.size.height;
+        
         
         [self performSelector:@selector(starterView) withObject:nil afterDelay:0.5];
     }
-    menuOpen = 1;
     introHeight = 200;
     return self;
 }
@@ -112,7 +110,6 @@
     [self sparksToRealOrigin];
     
     NSLog(@"close menu");
-    menuOpen = 0;
     menuOpen = FALSE;
 }
 
@@ -128,7 +125,7 @@
         [sparks runAction:originMove];
     }else{
         
-        CGPoint goTo = CGPointMake(sOrigin.x, sOrigin.y - 130);
+        CGPoint goTo = CGPointMake(sOrigin.x, 50);
         SKAction *originMove = [SKAction moveTo:goTo duration:0.3];
         [sparks runAction:originMove];
     }
@@ -141,16 +138,28 @@
 }
 
 -(void)makeMenu{
-    CGRect screenRect = [[UIScreen mainScreen] bounds];
-    CGFloat screenWidth = screenRect.size.width;
-    CGFloat screenHeight = screenRect.size.height;
     
     //    Menu Window
     
-    menu = [[UIView alloc] initWithFrame:CGRectMake((self.scene.frame.size.width)*-1, 20, (self.scene.frame.size.width)-40, menuHeight)];
+    if ([device hasPrefix:@"iPad"]) {
+        menuHeight = 800;
+    }else{
+        menuHeight = screenHeight - 120;
+    }
+    
+    menu = [[UIScrollView alloc] initWithFrame:CGRectMake((self.scene.frame.size.width)*-1, 20, (self.scene.frame.size.width)-40, menuHeight)];
     menu.backgroundColor = [UIColor whiteColor];
     menu.alpha = 0.9;
     [self.view addSubview:menu];
+    
+    menu.layer.cornerRadius = 6;
+    
+    if ([device hasPrefix:@"iPad"]) {
+    }
+    else
+    {
+        menu.contentSize = CGSizeMake(screenWidth - 40, 830);
+    }
     
     //    Birth Rate
     
@@ -163,7 +172,7 @@
     birthRate = [[UISlider alloc] initWithFrame:birthFrame];
     [birthRate addTarget:self action:@selector(sliderAction:) forControlEvents:UIControlEventValueChanged];
     [birthRate setBackgroundColor:[UIColor clearColor]];
-    birthRate.minimumValue = 0.0;
+    birthRate.minimumValue = 5;
     birthRate.maximumValue = 3000.0;
     birthRate.continuous = YES;
     birthRate.value = 700.0;
@@ -255,85 +264,87 @@
     [menu addSubview:lifeSpan];
     
     
+    
+    //        Speed
+    CGRect speedRect = CGRectMake(40, 380, 100, 20);
+    speedLabel = [[UILabel alloc] initWithFrame:speedRect];
+    speedLabel.text = @"Speed";
+    [menu addSubview:speedLabel];
+    
+    CGRect speedSliderRect = CGRectMake(20, 400, (menu.frame.size.width)-50, 30.0);
+    speedSlider = [[UISlider alloc] initWithFrame:speedSliderRect];
+    [speedSlider addTarget:self action:@selector(speed:) forControlEvents:UIControlEventValueChanged];
+    [speedSlider setBackgroundColor:[UIColor clearColor]];
+    speedSlider.minimumValue = 10;
+    speedSlider.maximumValue = 1000;
+    speedSlider.continuous = YES;
+    speedSlider.value = 90;
+    [menu addSubview:speedSlider];
+    
+    //        Red
+    
+    CGRect colourRect = CGRectMake(40, 440, 300, 20);
+    colour = [[UILabel alloc] initWithFrame:colourRect];
+    colour.text = @"Particle's Colour Mixer";
+    [menu addSubview:colour];
+    
+    CGRect redRect = CGRectMake(40, 480, 100, 20);
+    redLabel = [[UILabel alloc] initWithFrame:redRect];
+    redLabel.text = @"Red";
+    [menu addSubview:redLabel];
+    
+    CGRect redSliderRect = CGRectMake(20, 500, (menu.frame.size.width)-50, 30.0);
+    red = [[UISlider alloc] initWithFrame:redSliderRect];
+    [red addTarget:self action:@selector(colour:) forControlEvents:UIControlEventValueChanged];
+    [red setBackgroundColor:[UIColor clearColor]];
+    red.minimumValue = 0;
+    red.maximumValue = 1;
+    red.continuous = YES;
+    red.value = 0;
+    [menu addSubview:red];
+    
+    //        Green
+    
+    CGRect greenRect = CGRectMake(40, 540, 100, 20);
+    greenLabel = [[UILabel alloc] initWithFrame:greenRect];
+    greenLabel.text = @"Green";
+    [menu addSubview:greenLabel];
+    
+    CGRect greenSliderRect = CGRectMake(20, 560, (menu.frame.size.width)-50, 30.0);
+    green = [[UISlider alloc] initWithFrame:greenSliderRect];
+    [green addTarget:self action:@selector(colour:) forControlEvents:UIControlEventValueChanged];
+    [green setBackgroundColor:[UIColor clearColor]];
+    green.minimumValue = 0;
+    green.maximumValue = 1;
+    green.continuous = YES;
+    green.value = 0;
+    [menu addSubview:green];
+    
+    //        Blue
+    
+    CGRect blueRect = CGRectMake(40, 600, 100, 20);
+    blueLabel = [[UILabel alloc] initWithFrame:blueRect];
+    blueLabel.text = @"Blue";
+    [menu addSubview:blueLabel];
+    
+    CGRect blueSliderRect = CGRectMake(20, 620, (menu.frame.size.width)-50, 30.0);
+    blue = [[UISlider alloc] initWithFrame:blueSliderRect];
+    [blue addTarget:self action:@selector(colour:) forControlEvents:UIControlEventValueChanged];
+    [blue setBackgroundColor:[UIColor clearColor]];
+    blue.minimumValue = 0;
+    blue.maximumValue = 1;
+    blue.continuous = YES;
+    blue.value = 0;
+    [menu addSubview:blue];
+    
+    //        Segmented View
+    
+    CGRect backgroundColourRect = CGRectMake(40, 660, 250, 20);
+    backgroundColourLabel = [[UILabel alloc] initWithFrame:backgroundColourRect];
+    backgroundColourLabel.text = @"Background Colour";
+    [menu addSubview:backgroundColourLabel];
+    
     if ([device hasPrefix:@"iPad"]) {
-        //        Speed
-        CGRect speedRect = CGRectMake(40, 380, 100, 20);
-        speedLabel = [[UILabel alloc] initWithFrame:speedRect];
-        speedLabel.text = @"Speed";
-        [menu addSubview:speedLabel];
-        
-        CGRect speedSliderRect = CGRectMake(20, 400, (menu.frame.size.width)-50, 30.0);
-        speedSlider = [[UISlider alloc] initWithFrame:speedSliderRect];
-        [speedSlider addTarget:self action:@selector(speed:) forControlEvents:UIControlEventValueChanged];
-        [speedSlider setBackgroundColor:[UIColor clearColor]];
-        speedSlider.minimumValue = 10;
-        speedSlider.maximumValue = 1000;
-        speedSlider.continuous = YES;
-        speedSlider.value = 90;
-        [menu addSubview:speedSlider];
-        
-        //        Red
-        
-        CGRect colourRect = CGRectMake(40, 440, 300, 20);
-        colour = [[UILabel alloc] initWithFrame:colourRect];
-        colour.text = @"Particle's Colour Mixer";
-        [menu addSubview:colour];
-        
-        CGRect redRect = CGRectMake(40, 480, 100, 20);
-        redLabel = [[UILabel alloc] initWithFrame:redRect];
-        redLabel.text = @"Red";
-        [menu addSubview:redLabel];
-        
-        CGRect redSliderRect = CGRectMake(20, 500, (menu.frame.size.width)-50, 30.0);
-        red = [[UISlider alloc] initWithFrame:redSliderRect];
-        [red addTarget:self action:@selector(colour:) forControlEvents:UIControlEventValueChanged];
-        [red setBackgroundColor:[UIColor clearColor]];
-        red.minimumValue = 0;
-        red.maximumValue = 1;
-        red.continuous = YES;
-        red.value = 0;
-        [menu addSubview:red];
-        
-        //        Green
-        
-        CGRect greenRect = CGRectMake(40, 540, 100, 20);
-        greenLabel = [[UILabel alloc] initWithFrame:greenRect];
-        greenLabel.text = @"Green";
-        [menu addSubview:greenLabel];
-        
-        CGRect greenSliderRect = CGRectMake(20, 560, (menu.frame.size.width)-50, 30.0);
-        green = [[UISlider alloc] initWithFrame:greenSliderRect];
-        [green addTarget:self action:@selector(colour:) forControlEvents:UIControlEventValueChanged];
-        [green setBackgroundColor:[UIColor clearColor]];
-        green.minimumValue = 0;
-        green.maximumValue = 1;
-        green.continuous = YES;
-        green.value = 0;
-        [menu addSubview:green];
-        
-        //        Blue
-        
-        CGRect blueRect = CGRectMake(40, 600, 100, 20);
-        blueLabel = [[UILabel alloc] initWithFrame:blueRect];
-        blueLabel.text = @"Blue";
-        [menu addSubview:blueLabel];
-        
-        CGRect blueSliderRect = CGRectMake(20, 620, (menu.frame.size.width)-50, 30.0);
-        blue = [[UISlider alloc] initWithFrame:blueSliderRect];
-        [blue addTarget:self action:@selector(colour:) forControlEvents:UIControlEventValueChanged];
-        [blue setBackgroundColor:[UIColor clearColor]];
-        blue.minimumValue = 0;
-        blue.maximumValue = 1;
-        blue.continuous = YES;
-        blue.value = 0;
-        [menu addSubview:blue];
-        
-        //        Segmented View
-        
-        CGRect backgroundColourRect = CGRectMake(40, 660, 250, 20);
-        backgroundColourLabel = [[UILabel alloc] initWithFrame:backgroundColourRect];
-        backgroundColourLabel.text = @"Background Colour";
-        [menu addSubview:backgroundColourLabel];
         
         NSArray *itemArray = [NSArray arrayWithObjects: @"Red", @"Orange", @"Black", @"Green", @"Blue", @"Indigo", @"Violet", nil];
         seg = [[UISegmentedControl alloc] initWithItems:itemArray];
@@ -341,17 +352,33 @@
         [seg addTarget:self action:@selector(segControl:) forControlEvents:UIControlEventValueChanged];
         seg.selectedSegmentIndex = 2;
         [menu addSubview:seg];
+    }else{
+        
+        NSArray *itemArray1 = [NSArray arrayWithObjects: @"Red", @"Orange", @"Black", @"Green", nil];
+        NSArray *itemArray2 = [NSArray arrayWithObjects: @"Blue", @"Indego", @"Violet", nil];
+        
+        seg1 = [[UISegmentedControl alloc] initWithItems:itemArray1];
+        seg2 = [[UISegmentedControl alloc] initWithItems:itemArray2];
+        
+        seg1.frame = CGRectMake(20, 700, (menu.frame.size.width)-50, 50);
+        seg2.frame = CGRectMake(20, seg1.center.y + 30, (menu.frame.size.width)-50, 50);
+        
+        [seg1 addTarget:self action:@selector(seg1Control:) forControlEvents:UIControlEventValueChanged];
+        [seg2 addTarget:self action:@selector(seg2Control:) forControlEvents:UIControlEventValueChanged];
+
+        seg1.selectedSegmentIndex = 2;
+
+        
+        [menu addSubview:seg1];
+        [menu addSubview:seg2];
         
     }
+}
+
+-(IBAction)seg1Control:(UISegmentedControl *)segment{
     
-}
+    seg2.selectedSegmentIndex = -1;
 
--(IBAction)speed:(id)sender{
-    sparks.particleSpeed = speedSlider.value;
-}
-
--(IBAction)segControl:(UISegmentedControl *)segment
-{
     switch (segment.selectedSegmentIndex) {
         case 0:{
             self.scene.backgroundColor = [UIColor redColor];
@@ -369,46 +396,95 @@
             self.scene.backgroundColor = [UIColor greenColor];
             break;}
             
-        case 4:{
+    }
+    
+    
+}
+
+-(IBAction)seg2Control:(UISegmentedControl *)segment{
+    
+    seg1.selectedSegmentIndex = -1;
+    
+    switch (segment.selectedSegmentIndex) {
+        case 0:{
             self.scene.backgroundColor = [SKColor colorWithRed:0.25 green:0.41 blue:1 alpha:1];
             break;}
             
-        case 5:{
+        case 1:{
             self.scene.backgroundColor = [SKColor colorWithRed:0.29 green:0 blue:0.51 alpha:1];
             break;}
             
-        case 6:{
+        case 2:{
             self.scene.backgroundColor = [SKColor colorWithRed:0.56 green:0 blue:1 alpha:1];
             break;}
+        
+    }
+}
+
+    
+    -(IBAction)speed:(id)sender{
+        sparks.particleSpeed = speedSlider.value;
     }
     
-}
-
-
--(IBAction)colour:(id)sender{
+    -(IBAction)segControl:(UISegmentedControl *)segment
+    {
+        switch (segment.selectedSegmentIndex) {
+            case 0:{
+                self.scene.backgroundColor = [UIColor redColor];
+                break;}
+                
+            case 1:{
+                self.scene.backgroundColor = [UIColor orangeColor];
+                break;}
+                
+            case 2:{
+                self.scene.backgroundColor = [UIColor blackColor];
+                break;}
+                
+            case 3:{
+                self.scene.backgroundColor = [UIColor greenColor];
+                break;}
+                
+            case 4:{
+                self.scene.backgroundColor = [SKColor colorWithRed:0.25 green:0.41 blue:1 alpha:1];
+                break;}
+                
+            case 5:{
+                self.scene.backgroundColor = [SKColor colorWithRed:0.29 green:0 blue:0.51 alpha:1];
+                break;}
+                
+            case 6:{
+                self.scene.backgroundColor = [SKColor colorWithRed:0.56 green:0 blue:1 alpha:1];
+                break;}
+        }
+        
+    }
     
-    sparks.particleColorSequence = nil;
-    sparks.particleColorBlendFactor = 1.0;
     
-    sparks.particleColor = [SKColor colorWithRed:red.value green:green.value blue:blue.value alpha:1.0];
-}
-
--(IBAction)lifeSpanner:(id)sender{
-    sparks.particleLifetime = lifeSpan.value;
-}
-
--(IBAction)pRSlider:(id)sender{
-    sparks.particlePositionRange = CGVectorMake(pRSlider.value, prSliderHeight.value);
-}
-
--(IBAction)fall:(id)sender{
-    sparks.xAcceleration = fallXSlider.value;
-    sparks.yAcceleration = fallYSlider.value;
-}
-
--(IBAction)sliderAction:(id)sender{
-    sparks.particleBirthRate = birthRate.value;
-}
-
-
-@end
+    -(IBAction)colour:(id)sender{
+        
+        sparks.particleColorSequence = nil;
+        sparks.particleColorBlendFactor = 1.0;
+        
+        sparks.particleColor = [SKColor colorWithRed:red.value green:green.value blue:blue.value alpha:1.0];
+    }
+    
+    -(IBAction)lifeSpanner:(id)sender{
+        sparks.particleLifetime = lifeSpan.value;
+    }
+    
+    -(IBAction)pRSlider:(id)sender{
+        sparks.particlePositionRange = CGVectorMake(pRSlider.value, prSliderHeight.value);
+    }
+    
+    -(IBAction)fall:(id)sender{
+        sparks.xAcceleration = fallXSlider.value;
+        sparks.yAcceleration = fallYSlider.value;
+    }
+    
+    -(IBAction)sliderAction:(id)sender{
+        sparks.particleBirthRate = birthRate.value;
+    }
+    
+    
+    @end
