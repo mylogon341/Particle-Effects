@@ -44,7 +44,7 @@
 
 -(void)starterView{
     
-    UIAlertView *startAlert = [[UIAlertView alloc] initWithTitle:@"Welcome" message:@"Use this app for creating lovely particle effects. Control all variables through the menu, which can be accessed by tapping two fingers anywhere on this screen. Tap with two fingers again to remove the menu. Have fun" delegate:self cancelButtonTitle:@"Thanks!" otherButtonTitles:nil];
+    UIAlertView *startAlert = [[UIAlertView alloc] initWithTitle:@"Welcome" message:@"Use this app for creating lovely particle effects. Control all variables through the menu, which can be accessed by tapping two fingers anywhere on this screen. \nTap with two fingers outside the menu to remove it. \nHave fun!" delegate:self cancelButtonTitle:@"Thanks!" otherButtonTitles:nil];
     [startAlert show];
     
 }
@@ -96,7 +96,6 @@
     [UIView commitAnimations];
     
     [self performSelector:@selector(sparksToOrigin) withObject:nil afterDelay:0.75];
-    NSLog(@"menu open");
     menuOpen = TRUE;
 }
 
@@ -109,7 +108,6 @@
     [UIView commitAnimations];
     [self sparksToRealOrigin];
     
-    NSLog(@"close menu");
     menuOpen = FALSE;
 }
 
